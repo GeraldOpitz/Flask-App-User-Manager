@@ -28,4 +28,7 @@ pip install -r requirements.txt
 echo "Running tests..."
 pytest tests/ --maxfail=1 --disable-warnings -q || echo "Some tests failed"
 
+echo "Starting Docker container..."
+docker compose up --build -d
 
+echo "Setup complete! Application is running in Docker."
