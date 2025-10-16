@@ -19,6 +19,7 @@ def index():
     users = User.query.all()
     return render_template('index.html', users=users)
 
+# Add a new user
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
     if request.method == 'POST':
@@ -33,6 +34,7 @@ def add_user():
 
     return render_template('add_user.html')
 
+# Edit a user
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_user(id):
     user = User.query.get_or_404(id)
@@ -43,6 +45,14 @@ def edit_user(id):
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('edit_user.html', user=user)
+
+# Delete a user
+@app.route('/delete/<int:id>')
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     with app.app_context():
