@@ -20,3 +20,7 @@ else
     echo "Could not find virtual environment activation script."
     exit 1
 fi
+
+echo "Installing dependencies..."
+pip install --upgrade pip
+pip install -r requirements.txt
