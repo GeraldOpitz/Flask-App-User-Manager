@@ -1,3 +1,7 @@
 .venv/
+users.db
 instance/
-__pychache__/
+**/_pycache_/
+*.pyc
+*.pyo
+*.pyd
