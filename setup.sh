@@ -24,3 +24,8 @@ fi
 echo "Installing dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
+
+echo "Running tests..."
+pytest tests/ --maxfail=1 --disable-warnings -q || echo "Some tests failed"
+
+
