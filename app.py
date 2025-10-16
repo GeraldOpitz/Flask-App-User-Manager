@@ -1,10 +1,23 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(_name_)
+app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return "Flask app is running!"
+# Database configuration
 
-if _name_ == '_main_':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+## User model definition
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    role = db.Column(db.String(10), nullable=False)
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        print("Database and tables created successfully.")
