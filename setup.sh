@@ -29,6 +29,6 @@ echo "Running tests..."
 pytest --cov=./ --cov-report=term-missing --cov-report html -q || echo "Some tests failed"
 
 echo "Starting Docker container..."
-docker compose up --build -d
+docker compose -p user-manager up --build -d
 
 echo "Setup complete! Application is running in Docker."
