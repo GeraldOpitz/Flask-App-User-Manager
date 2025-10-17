@@ -7,3 +7,4 @@ instance/
 *.pyd
 .pytest_cache/
 htmlcov/
+.coverage
