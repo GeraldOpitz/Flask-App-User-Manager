@@ -1,40 +1,32 @@
-# tests/test_delete_user_route.py
-import os, sys
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+import os
+import sys
+import re
+import pytest
+
+# Ensure we can import "app" from the project root
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-import pytest
-from jinja2 import DictLoader
-from app import app, db, User
+from app import app, db, User  # noqa: E402
 
-#
+
 @pytest.fixture(autouse=True)
 def _setup_app_ctx():
-    """Configure in-memory DB and in-memory templates per test."""
+    """
+    Configure the app for testing with an in-memory SQLite DB.
+    Create/drop tables around each test so your real users.db is untouched.
+    """
     app.config["TESTING"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-
-    # Minimal templates so we don't depend on real /templates files
-    app.jinja_loader = DictLoader({
-        "index.html": """<!doctype html>
-<title>Users</title>
-<ul>
-{% for u in users %}
-  <li>{{ u.name }} - {{ u.email }} ({{ u.role }})</li>
-{% else %}
-  <li>No users</li>
-{% endfor %}
-</ul>"""
-    })
-
     with app.app_context():
         db.create_all()
         yield
         db.session.remove()
         db.drop_all()
 
-# Helper to create a user
+
 def _create_user(name="Alice", email="alice@example.com", role="admin"):
     with app.app_context():
         u = User(name=name, email=email, role=role)
@@ -42,26 +34,67 @@ def _create_user(name="Alice", email="alice@example.com", role="admin"):
         db.session.commit()
         return u.id
 
-# Tests for DELETE /delete
-def test_delete_user_removes_and_redirects():
-    """GET /delete/<id> should delete the user and redirect to index."""
+
+def test_edit_user_get_prefilled_form():
+    """
+    GET /edit/<id> should render the form prefilled with existing user data.
+    """
     user_id = _create_user()
     client = app.test_client()
 
-    resp = client.get(f"/delete/{user_id}", follow_redirects=True)
+    resp = client.get(f"/edit/{user_id}")
     assert resp.status_code == 200
-
     html = resp.get_data(as_text=True)
 
-    assert "No users" in html
+    # Accept English or Spanish title
+    assert ("<title>Edit User</title>" in html) or ("<title>Editar Usuario</title>" in html)
+    assert 'value="Alice"' in html
+    assert 'value="alice@example.com"' in html
+    assert 'value="admin"' in html
 
 
-    with app.app_context():
-        assert db.session.get(User, user_id) is None
-
-# Tests for 404 errors
-def test_delete_user_404_when_not_found():
-    """GET /delete/<id> with a non-existent id should return 404."""
+def test_edit_user_post_updates_and_redirects():
+    """
+    POST /edit/<id> should update the user and redirect to index.
+    Then, the index HTML should contain a <tr> where the three <td> cells
+    (in order) contain: Alice Updated, alice2@example.com, owner.
+    This regex is tolerant to extra HTML (e.g., <a>, <span>) inside cells.
+    """
+    user_id = _create_user()
     client = app.test_client()
-    resp = client.get("/delete/9999")
+
+    resp = client.post(
+        f"/edit/{user_id}",
+        data={"name": "Alice Updated", "email": "alice2@example.com", "role": "owner"},
+        follow_redirects=True,
+    )
+    assert resp.status_code == 200
+    html = resp.get_data(as_text=True)
+
+    # Robust regex: allows inner tags/content and whitespace inside each <td>
+    row_pattern = re.compile(
+        r"<tr[^>]*>.*?"
+        r"<td[^>]*>.*?Alice\s*Updated.*?</td>.*?"          # name cell
+        r"<td[^>]*>.*?alice2@example\.com.*?</td>.*?"      # email cell
+        r"<td[^>]*>.*?owner.*?</td>.*?"                    # role cell
+        r"</tr>",
+        flags=re.I | re.S,
+    )
+    assert row_pattern.search(html), (
+        "Updated row not found in HTML after edit. "
+        "Expected a single <tr> containing, in order: "
+        "'Alice Updated', 'alice2@example.com', 'owner'."
+    )
+
+    # DB sanity check
+    with app.app_context():
+        updated = db.session.execute(
+            db.select(User).filter_by(email="alice2@example.com")
+        ).scalars().first()
+        assert updated is not None and updated.name == "Alice Updated" and updated.role == "owner"
+
+
+def test_edit_user_404_when_not_found():
+    client = app.test_client()
+    resp = client.get("/edit/999999")
     assert resp.status_code == 404
