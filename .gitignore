@@ -5,3 +5,5 @@ instance/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+htmlcov/
