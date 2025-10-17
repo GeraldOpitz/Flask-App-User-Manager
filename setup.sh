@@ -26,7 +26,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 echo "Running tests..."
-pytest tests/ --maxfail=1 --disable-warnings -q || echo "Some tests failed"
+pytest --cov=./ --cov-report=term-missing --cov-report html -q || echo "Some tests failed"
 
 echo "Starting Docker container..."
 docker compose up --build -d
