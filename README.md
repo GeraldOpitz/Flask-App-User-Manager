@@ -31,6 +31,22 @@ This project demonstrates how to use **Flask**, **SQLAlchemy**, and **SQLite** t
 
 ---
 
+## Project Structure
+
+```bash
+Flask-App-User-Manager/
+├─ app.py
+├─ requirements.txt
+├─ docker-compose.yml
+├─ Dockerfile
+├─ setup.sh
+├─ templates/          
+├─ static/              # CSS/JS/assets
+└─ tests/               # pytest (unit & integration)
+```
+
+
+
 ## Installation and Setup
 
 1. **Clone the repository**:
@@ -51,3 +67,4 @@ dos2unix setup.sh
 
 4. Open the container in Docker Desktop and visit http://127.0.0.1:5000
  in your browser.
+
