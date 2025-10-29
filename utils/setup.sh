@@ -23,7 +23,7 @@ fi
 
 echo "Installing dependencies..."
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 
 echo "Running tests..."
 pytest --cov=./ --cov-report=term-missing --cov-report html -q || echo "Some tests failed"

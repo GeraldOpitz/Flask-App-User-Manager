@@ -5,7 +5,7 @@ if ROOT not in sys.path:
 
 import pytest
 from sqlalchemy import text, inspect
-from app import app, db, User
+from app.app import app, db, User
 
 # Configure the app for testing
 @pytest.fixture(autouse=True)
@@ -52,3 +52,4 @@ def test_insert_and_query_user():
         assert got is not None
         assert got.name == "Alice"
         assert got.role == "admin"
+        

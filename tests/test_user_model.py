@@ -5,7 +5,7 @@ if ROOT not in sys.path:
 
 import pytest
 from sqlalchemy.exc import IntegrityError
-from app import app, db, User
+from app.app import app, db, User
 
 # Configure the app for testing
 @pytest.fixture(autouse=True)
