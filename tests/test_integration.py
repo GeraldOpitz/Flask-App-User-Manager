@@ -8,7 +8,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from app import app, db, User  # noqa: E402
+from app.app import app, db, User  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
