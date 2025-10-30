@@ -34,7 +34,7 @@ def add_user():
 
     return render_template('add_user.html')
 
-# Edit a users
+# Edit a user
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_user(id):
     user = User.query.get_or_404(id)
