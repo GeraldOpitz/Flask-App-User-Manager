@@ -8,4 +8,4 @@ instance/
 .pytest_cache/
 htmlcov/
 .coverage
-.github
+
