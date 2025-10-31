@@ -70,4 +70,4 @@ Example:
 ---
 
 ## Reviewers
-@GeraldOpitz @MatiasValladares  
+@GeraldOpitz or @MatiasValladares  
