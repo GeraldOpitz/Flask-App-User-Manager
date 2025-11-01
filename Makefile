@@ -32,8 +32,7 @@ venv:
 
 install:
 	@echo "Installing dependencies..."
-	@$(PIP) install --upgrade pip
-	@$(PIP) install -r requirements.txt
+	@$(PIP) install --require-hashes -r requirements.txt
 
 test-env:
 	@if [ ! -d "$(TEST_VENV)" ]; then \
@@ -43,9 +42,7 @@ test-env:
 		echo "Test virtual environment already exists."; \
 	fi
 	@echo "Installing test dependencies..."
-	@$(TEST_PIP) install --upgrade pip
-	@$(TEST_PIP) install -r requirements.txt
-	@$(TEST_PIP) install pytest pytest-cov
+	@$(TEST_PIP) install --require-hashes -r requirements-test.txt
 
 test: test-env
 	@echo "Running tests..."

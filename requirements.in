@@ -1,4 +1,2 @@
 flask
-pytest
-pytest-cov
 Flask-SQLAlchemy
