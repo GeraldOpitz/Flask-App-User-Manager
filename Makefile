@@ -54,7 +54,10 @@ docker:
 
 lint: test-env
 	@echo "Running Pylint..."
+	@$(TEST_PY) -m pylint app tests --output-format=json > pylint_report.json || true
+	@$(TEST_VENV)/bin/pylint-json2html pylint_report.json -o pylint_report.html || echo "Could not generate HTML report"
 	@$(TEST_PY) -m pylint app tests || echo "Linting warnings/errors found"
+	@echo "Pylint report generated: pylint_report.html"
 
 reset:
 	@echo "Cleaning everything..."
@@ -66,6 +69,9 @@ reset:
 	@rm -rf $(TEST_VENV)
 	@echo "Removing test coverage reports..."
 	@rm -rf htmlcov .coverage .pytest_cache
+	@echo "Removing lint report..."
+	@rm -f pylint_report.json
+	@rm -f pylint_report.html
 	@echo "Removing Python cache..."
 	@find . -type d -name "__pycache__" -exec rm -rf {} + || true
 	@echo "Project fully cleaned!"
