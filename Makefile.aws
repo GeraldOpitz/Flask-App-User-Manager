@@ -1,0 +1,37 @@
+SHELL := /bin/bash
+.SHELLFLAGS = -e -o pipefail -c
+.DEFAULT_GOAL := setup
+
+VENV = .venv
+PYTHON := $(shell command -v python3 || command -v python)
+
+PIP := $(VENV)/bin/pip
+PY := $(VENV)/bin/python
+
+setup: venv install run
+
+venv:
+	@if [ ! -d "$(VENV)" ]; then \
+		echo "Creating virtual environment..."; \
+		$(PYTHON) -m venv $(VENV); \
+	else \
+		echo "Virtual environment already exists."; \
+	fi
+
+install:
+	@echo "Installing dependencies..."
+	@$(PIP) install --require-hashes -r requirements.txt
+
+run:
+	@echo "Running Flask app"
+	@$(PY) app/app.py
+
+reset:
+	@echo "Cleaning everything..."
+	@echo "Removing development virtual environment..."
+	@rm -rf $(VENV)
+	@echo "Removing test virtual environment..."
+	@rm -rf $(TEST_VENV)
+	@echo "Removing Python cache..."
+	@find . -type d -name "__pycache__" -exec rm -rf {} + || true
+	@echo "Project fully cleaned!"
