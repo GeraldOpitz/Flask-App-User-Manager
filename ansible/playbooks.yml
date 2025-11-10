@@ -1,0 +1,17 @@
+- name: Baseline (common) for all hosts
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configure database host
+  hosts: db
+  become: true
+  roles:
+    - db
+
+- name: Deploy Flask application
+  hosts: app
+  become: true
+  roles:
+    - app

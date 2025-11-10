@@ -1,0 +1,75 @@
+- name: Ensure app user exists
+  user:
+    name: "{{ app_user }}"
+    create_home: no
+    shell: /usr/sbin/nologin
+  tags: [app]
+
+- name: Create app directory
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: "0755"
+  tags: [app]
+
+- name: Checkout application repo
+  git:
+    repo: "{{ app_repo_url }}"
+    dest: "{{ app_dir }}"
+    version: "{{ app_checkout_ref }}"
+    force: true
+  tags: [app]
+
+- name: Create virtualenv
+  command: "python3 -m venv {{ app_venv }}"
+  args:
+    creates: "{{ app_venv }}/bin/activate"
+  tags: [app]
+
+- name: Install Python dependencies
+  pip:
+    requirements: "{{ app_dir }}/requirements.txt"
+    virtualenv: "{{ app_venv }}"
+  tags: [app]
+
+- name: Install/Update systemd unit for gunicorn
+  template:
+    src: gunicorn.service.j2
+    dest: "/etc/systemd/system/{{ app_service_name }}.service"
+    mode: "0644"
+  notify: Restart app
+  tags: [app]
+
+- name: Enable and start app service
+  systemd:
+    name: "{{ app_service_name }}"
+    enabled: true
+    state: started
+    daemon_reload: true
+  tags: [app]
+
+- name: Install & configure nginx  # revisar si corresponde a este rol
+  when: use_nginx | default(false)
+  block:
+    - apt:
+        name: nginx
+        state: present
+        update_cache: true
+    - template:
+        src: nginx_flask.conf.j2
+        dest: /etc/nginx/sites-available/flask_app.conf
+    - file:
+        src: /etc/nginx/sites-available/flask_app.conf
+        dest: /etc/nginx/sites-enabled/flask_app.conf
+        state: link
+        force: true
+    - file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+    - service:
+        name: nginx
+        state: restarted
+        enabled: true
+  tags: [app, nginx]

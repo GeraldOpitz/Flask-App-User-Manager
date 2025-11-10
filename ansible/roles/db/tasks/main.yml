@@ -1,0 +1,62 @@
+- name: Install PostgreSQL and deps
+  apt:
+    update_cache: true
+    name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+    state: present
+  tags: [db]
+
+- name: Ensure PostgreSQL is running
+  service:
+    name: postgresql
+    state: started
+    enabled: true
+  tags: [db]
+
+- name: Template postgresql.conf
+  template:
+    src: postgresql.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf"
+    owner: postgres
+    group: postgres
+    mode: "0644"
+  notify: Restart PostgreSQL
+  tags: [db]
+
+- name: Template pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: "/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: "0640"
+  notify: Restart PostgreSQL
+  tags: [db]
+
+- name: Create database
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+  tags: [db]
+
+- name: Create DB user
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    state: present
+  tags: [db]
+
+- name: Grant schema privileges
+  become_user: postgres
+  community.postgresql.postgresql_privs:
+    db: "{{ db_name }}"
+    objs: PUBLIC
+    privs: ALL
+    type: schema
+    roles: "{{ db_user }}"
+    state: present
+  tags: [db]
