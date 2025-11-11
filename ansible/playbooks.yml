@@ -7,11 +7,15 @@
 - name: Configure database host
   hosts: db
   become: true
+  vars_files:
+  - inventories/dev/group_vars/vault.yml
   roles:
     - db
 
 - name: Deploy Flask application
   hosts: app
   become: true
+  vars_files:
+  - inventories/dev/group_vars/vault.yml
   roles:
     - app

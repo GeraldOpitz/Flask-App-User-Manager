@@ -1,5 +1,4 @@
 # Local loopback
 host    all           all           127.0.0.1/32          md5
 
-# Permite a la app conectarse (restringe en prod por CIDR o SG)
 host    {{ db_name }} {{ db_user }} 0.0.0.0/0             md5
