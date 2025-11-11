@@ -9,14 +9,25 @@
     state: present
   tags: [db]
 
-- name: Ensure PostgreSQL cluster is initialized
+- name: Ensure PostgreSQL cluster is initialized and valid
   become: true
   shell: |
-    if ! pg_lsclusters | grep -q "{{ postgresql_version }} main"; then
+    set -e
+    if pg_lsclusters | grep -q "{{ postgresql_version }} main"; then
+      echo "Cluster exists, checking data directory..."
+      DATA_DIR=$(pg_lsclusters | awk '/{{ postgresql_version }} main/ {print $6}')
+      if [ -z "$DATA_DIR" ] || [ ! -d "$DATA_DIR/base" ]; then
+        echo "Invalid or missing data dir: $DATA_DIR. Recreating cluster..."
+        systemctl stop postgresql || true
+        pg_dropcluster --stop {{ postgresql_version }} main || true
+        rm -rf /var/lib/postgresql/{{ postgresql_version }}/main
+        pg_createcluster {{ postgresql_version }} main --start
+      else
+        echo "Cluster is healthy."
+      fi
+    else
       echo "No cluster found, creating..."
       pg_createcluster {{ postgresql_version }} main --start
-    else
-      echo "Cluster already exists."
     fi
   args:
     executable: /bin/bash
