@@ -35,6 +35,14 @@
   notify: Restart PostgreSQL
   tags: [db]
 
+- name: Ensure PostgreSQL cluster is initialized
+  become: true
+  shell: |
+    pg_lsclusters | grep -q main || pg_createcluster 16 main --start
+  args:
+    executable: /bin/bash
+  tags: [db]
+
 - name: Create database
   become: true
   shell: "sudo -u postgres psql -c 'CREATE DATABASE {{ db_name }};'"
