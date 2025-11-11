@@ -75,4 +75,3 @@
   args:
     executable: /bin/bash
   tags: [db]
-
