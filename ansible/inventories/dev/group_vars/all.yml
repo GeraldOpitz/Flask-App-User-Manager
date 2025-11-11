@@ -1,5 +1,5 @@
 project_name: "Flask-User-Manager"
-app_repo_url: "https://github.com/GeraldOpitz/Flask-App-User-Manager.git"
+app_repo_url: "https://github.com/GeraldOpitz/Flask-App-User-Manager"
 app_checkout_ref: "feature/FUM-29-Set-up-DB-in-the-cloud-AWS" 
 app_dir: "/opt/flask_user_manager"
 app_venv: "{{ app_dir }}/.venv"
