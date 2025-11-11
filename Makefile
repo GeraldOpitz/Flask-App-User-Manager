@@ -22,6 +22,8 @@ endif
 setup: venv install test lint docker
 	@echo "Application is running in Docker."
 
+setup aws: venv install run
+
 venv:
 	@if [ ! -d "$(VENV)" ]; then \
 		echo "Creating virtual environment..."; \
@@ -59,6 +61,10 @@ lint: test-env
 	@$(TEST_PY) -m pylint app tests || echo "Linting warnings/errors found"
 	@echo "Pylint report generated: pylint_report.html"
 
+run:
+	@echo "Running Flask app"
+	@$(PY) app/app.py
+
 reset:
 	@echo "Cleaning everything..."
 	@echo "Stopping and removing Docker containers and images..."
@@ -73,5 +79,5 @@ reset:
 	@rm -f pylint_report.json
 	@rm -f pylint_report.html
 	@echo "Removing Python cache..."
-	@find . -type d -name "__pycache__" -exec rm -rf {} + || true
+	@find . -type d -name "_pycache_" -exec rm -rf {} + || true
 	@echo "Project fully cleaned!"
