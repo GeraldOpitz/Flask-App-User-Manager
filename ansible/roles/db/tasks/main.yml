@@ -39,11 +39,12 @@
 - name: Recreate PostgreSQL cluster if invalid
   become: true
   shell: |
+    set -e
     if pg_lsclusters | grep -q "16 main"; then
       echo "Cluster exists, checking data directory..."
       DATA_DIR=$(pg_lsclusters | awk '/16 main/ {print $6}')
       if [ ! -d "$DATA_DIR/base" ]; then
-        echo "Invalid data dir: $DATA_DIR. Recreating cluster."
+        echo "Invalid data dir: $DATA_DIR. Recreating cluster..."
         systemctl stop postgresql || true
         pg_dropcluster --stop 16 main || true
         rm -rf /var/lib/postgresql/16/main
@@ -53,10 +54,13 @@
       fi
     else
       echo "Cluster not found, creating..."
+      rm -rf /var/lib/postgresql/16/main || true
       pg_createcluster 16 main --start
     fi
   args:
     executable: /bin/bash
+  register: recreate_cluster
+  changed_when: "'Recreating cluster' in recreate_cluster.stdout or 'creating' in recreate_cluster.stdout"
   tags: [db]
 
 - name: Create database
