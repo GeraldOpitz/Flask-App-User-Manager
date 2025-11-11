@@ -1,19 +1,15 @@
-# Proyecto/App
 project_name: "Flask-User-Manager"
 app_repo_url: "https://github.com/GeraldOpitz/Flask-App-User-Manager.git"
-app_checkout_ref: "develop" #revisar rama, debe ser futuramente main
-# Rutas/servicio
+app_checkout_ref: "develop" 
 app_dir: "/opt/flask_user_manager"
 app_venv: "{{ app_dir }}/.venv"
 app_user: "flaskapp"
 app_service_name: "flask-user-manager"
 app_port: 5000
-use_nginx: true  # pon en false si no quieres nginx en dev
 
-# DB (credenciales desde vault.yml)
 db_host: "{{ hostvars['DB_EC2'].ansible_host }}"
 db_port: 5432
 db_name: "usersdb"
 db_user: "{{ vault_db_user }}"
 db_password: "{{ vault_db_password }}"
-postgresql_version: "15" #revisar la versión de postgresql en dev
+postgresql_version: "16"
