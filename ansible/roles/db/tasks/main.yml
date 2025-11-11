@@ -2,7 +2,8 @@
   apt:
     update_cache: true
     name:
-      - postgresql
+      - postgresql-16
+      - postgresql-client-16
       - postgresql-contrib
       - python3-psycopg2
     state: present
@@ -35,10 +36,25 @@
   notify: Restart PostgreSQL
   tags: [db]
 
-- name: Ensure PostgreSQL cluster is initialized
+- name: Recreate PostgreSQL cluster if invalid
   become: true
   shell: |
-    pg_lsclusters | grep -q main || pg_createcluster 16 main --start
+    if pg_lsclusters | grep -q "16 main"; then
+      echo "Cluster exists, checking data directory..."
+      DATA_DIR=$(pg_lsclusters | awk '/16 main/ {print $6}')
+      if [ ! -d "$DATA_DIR/base" ]; then
+        echo "Invalid data dir: $DATA_DIR. Recreating cluster."
+        systemctl stop postgresql || true
+        pg_dropcluster --stop 16 main || true
+        rm -rf /var/lib/postgresql/16/main
+        pg_createcluster 16 main --start
+      else
+        echo "Cluster is healthy, skipping recreation."
+      fi
+    else
+      echo "Cluster not found, creating..."
+      pg_createcluster 16 main --start
+    fi
   args:
     executable: /bin/bash
   tags: [db]
