@@ -6,6 +6,8 @@ from sqlalchemy.exc import DataError, IntegrityError
 
 load_dotenv()
 
+load_dotenv()
+
 app = Flask(__name__)
 
 DB_USER = os.getenv("DB_USER")
