@@ -54,6 +54,12 @@
   notify: Restart PostgreSQL
   tags: [db]
 
+- name: Restart PostgreSQL (before creating DB)
+  systemd:
+    name: "postgresql@{{ postgresql_version }}-main"
+    state: restarted
+    daemon_reload: yes
+
 - name: Create database if not exists
   ansible.builtin.shell: |
     sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname='{{ db_name }}'" | grep -q 1 || \
