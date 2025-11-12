@@ -2,6 +2,9 @@
 {% block title %}Edit User{% endblock %}
 {% block content %}
 <h2>Edit User</h2>
+{% if error_message %}
+  <div style="color: red;">{{ error_message }}</div>
+{% endif %}
 <form method="POST">
     <label>Name:</label><br>
     <input type="text" name="name" value="{{ user.name }}" required><br>
