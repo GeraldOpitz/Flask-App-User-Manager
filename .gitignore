@@ -9,3 +9,4 @@ instance/
 htmlcov/
 .coverage
 .env
+.vault_pass.txt
