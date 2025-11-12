@@ -63,7 +63,7 @@ lint: test-env
 
 run:
 	@echo "Running Flask app"
-	@$(PY) app/app.py
+	nohup @$(PY) app.py > flask.log 2>&1 &
 
 reset:
 	@echo "Cleaning everything..."
