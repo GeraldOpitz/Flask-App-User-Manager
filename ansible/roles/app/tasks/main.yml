@@ -4,6 +4,12 @@
     shell: /bin/bash
     create_home: yes
 
+- name: Remove old app directory
+  file:
+    path: "{{ app_dir }}"
+    state: absent
+  become: true
+
 - name: Create app directory
   file:
     path: "{{ app_dir }}"
@@ -35,6 +41,6 @@
     update: yes
 
 - name: Run Makefile to setup app on EC2
-  command: sudo -u {{ app_user }} make setup aws
+  command: sudo -u {{ app_user }} make setup_aws
   args:
     chdir: "{{ app_dir }}"

@@ -22,7 +22,7 @@ endif
 setup: venv install test lint docker
 	@echo "Application is running in Docker."
 
-setup aws: venv install run
+setup_aws: venv install run
 
 venv:
 	@if [ ! -d "$(VENV)" ]; then \
