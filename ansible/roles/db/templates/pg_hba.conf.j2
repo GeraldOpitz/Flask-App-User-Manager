@@ -1,4 +1,9 @@
 # Local loopback
 host    all           all           127.0.0.1/32          md5
 
+# Allow remote connections
 host    {{ db_name }} {{ db_user }} 0.0.0.0/0             md5
+
+# Allow local postgres access
+local   all             postgres                                peer
+
