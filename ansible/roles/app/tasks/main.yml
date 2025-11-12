@@ -32,6 +32,12 @@
     group: "{{ app_user }}"
     recurse: yes
 
+- name: Remove existing app repo (if any)
+  file:
+    path: "{{ app_dir }}"
+    state: absent
+  become: true
+
 - name: Checkout application repo
   git:
     repo: "{{ app_repo_url }}"
@@ -41,6 +47,12 @@
     update: yes
 
 - name: Run Makefile to setup app on EC2
-  command: sudo -u {{ app_user }} make setup_aws
+  command: make setup_aws
   args:
     chdir: "{{ app_dir }}"
+  environment:
+    DB_HOST: "{{ db_host }}"
+    DB_PORT: "{{ db_port }}"
+    DB_NAME: "{{ db_name }}"
+    DB_USER: "{{ db_user }}"
+    DB_PASSWORD: "{{ db_password }}"
