@@ -1,0 +1,40 @@
+- name: Update apt cache
+  apt:
+    update_cache: true
+  tags: [common]
+
+- name: Install base packages
+  apt:
+    name:
+      - git
+      - curl
+      - ufw
+      - python3-venv
+      - python3-pip
+    state: present
+  tags: [common]
+
+- name: Allow SSH
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+  ignore_errors: true
+  tags: [common]
+
+- name: Allow HTTP (nginx) if enabled
+  when: use_nginx | default(false)
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+  ignore_errors: true
+  tags: [common]
+
+- name: Allow app port
+  ufw:
+    rule: allow
+    port: 5000
+    proto: tcp
+  ignore_errors: true
+  tags: [common]

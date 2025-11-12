@@ -22,7 +22,7 @@ endif
 setup: venv install test lint docker
 	@echo "Application is running in Docker."
 
-setup aws: venv install run
+setup_aws: venv install run
 
 venv:
 	@if [ ! -d "$(VENV)" ]; then \
@@ -63,7 +63,7 @@ lint: test-env
 
 run:
 	@echo "Running Flask app"
-	@$(PY) app/app.py
+	nohup @$(PY) app.py > flask.log 2>&1 &
 
 reset:
 	@echo "Cleaning everything..."

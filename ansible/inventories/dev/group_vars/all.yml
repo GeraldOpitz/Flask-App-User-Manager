@@ -1,0 +1,15 @@
+project_name: "Flask-User-Manager"
+app_repo_url: "https://github.com/GeraldOpitz/Flask-App-User-Manager"
+app_checkout_ref: "feature/FUM-52-Set-up-Ansible-project-structure" 
+app_dir: "/opt/flask_user_manager"
+app_venv: "{{ app_dir }}/.venv"
+app_user: "flaskapp"
+app_service_name: "flask-user-manager"
+app_port: 5000
+
+db_host: "{{ hostvars['DB_EC2'].ansible_host }}"
+db_port: 5432
+db_name: "usersdb"
+db_user: "{{ vault_db_user }}"
+db_password: "{{ vault_db_password }}"
+postgresql_version: "16"
