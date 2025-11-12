@@ -58,10 +58,11 @@
     DB_PASSWORD: "{{ db_password }}"
 
 - name: Run Flask app in background
-  command: nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
+  command: nohup ./.venv/bin/python -m flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
   args:
     chdir: "{{ app_dir }}"
   environment:
+    FLASK_APP: app/app.py
     DB_HOST: "{{ db_host }}"
     DB_PORT: "{{ db_port }}"
     DB_NAME: "{{ db_name }}"
