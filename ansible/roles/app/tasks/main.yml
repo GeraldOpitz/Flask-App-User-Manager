@@ -14,12 +14,9 @@
   tags: [app]
 
 - name: Add /opt/flask_user_manager as a safe git directory
-  become: true
-  become_user: "{{ app_user }}"
   shell: git config --global --add safe.directory {{ app_dir }}
   args:
     executable: /bin/bash
-
 
 - name: Checkout application repo
   git:
