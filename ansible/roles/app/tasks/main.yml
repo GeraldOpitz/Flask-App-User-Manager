@@ -18,6 +18,14 @@
   args:
     executable: /bin/bash
 
+- name: Ensure app dir ownership
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    recurse: yes
+
 - name: Checkout application repo
   git:
     repo: "{{ app_repo_url }}"
@@ -25,9 +33,6 @@
     version: "{{ app_checkout_ref }}"
     force: true
     update: yes
-  become: true
-  become_user: "{{ app_user }}"
-  tags: [app]
 
 - name: Run Makefile to setup app on EC2
   command: make setup\ aws
