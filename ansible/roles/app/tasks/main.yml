@@ -1,10 +1,3 @@
-- name: Ensure app user exists
-  user:
-    name: "{{ app_user }}"
-    create_home: no
-    shell: /usr/sbin/nologin
-  tags: [app]
-
 - name: Create app directory
   file:
     path: "{{ app_dir }}"
@@ -20,6 +13,7 @@
     dest: "{{ app_dir }}"
     version: "{{ app_checkout_ref }}"
     force: true
+    update: yes
   tags: [app]
 
 - name: Run Makefile to setup app on EC2
