@@ -46,6 +46,15 @@
     force: true
     update: yes
 
+- name: Debug DB env variables
+  debug:
+    msg:
+      - "DB_HOST={{ db_host }}"
+      - "DB_PORT={{ db_port }}"
+      - "DB_NAME={{ db_name }}"
+      - "DB_USER={{ db_user }}"
+      - "DB_PASSWORD={{ db_password }}"
+
 - name: Run Makefile to setup app on EC2
   command: make setup_aws
   args:
