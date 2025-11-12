@@ -35,8 +35,6 @@
     update: yes
 
 - name: Run Makefile to setup app on EC2
-  command: make setup\ aws
+  command: sudo -u {{ app_user }} make setup\ aws
   args:
     chdir: "{{ app_dir }}"
-  become: true
-  become_user: "{{ app_user }}"
