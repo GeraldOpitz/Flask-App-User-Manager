@@ -51,6 +51,7 @@
   args:
     chdir: "{{ app_dir }}"
   environment:
+    FLASK_TESTING: "1"
     DB_HOST: "{{ db_host }}"
     DB_PORT: "{{ db_port }}"
     DB_NAME: "{{ db_name }}"
