@@ -60,9 +60,9 @@
 
 - name: Show test output
   debug:
-    var: test_result.stdout_lines
+    var: test_results.stdout_lines
 
 - name: Fail if tests failed
   fail:
     msg: "Some tests failed during feature branch execution."
-  when: test_result.rc != 0
+  when: test_results.rc != 0
