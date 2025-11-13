@@ -24,6 +24,8 @@ setup: venv install test lint docker
 
 setup_aws: venv install run
 
+setup_test: test lint 
+
 venv:
 	@if [ ! -d "$(VENV)" ]; then \
 		echo "Creating virtual environment..."; \

@@ -1,0 +1,21 @@
+- name: Baseline (common) for all hosts
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configure database host
+  hosts: db
+  become: true
+  vars_files:
+    - inventories/dev/group_vars/vault.yml
+  roles:
+    - db
+
+- name: Run Flask tests
+  hosts: app
+  become: true
+  vars_files:
+    - inventories/dev/group_vars/vault.yml
+  roles:
+    - flask-tests
