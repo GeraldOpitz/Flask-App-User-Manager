@@ -1,4 +1,4 @@
-.venv/
+.venv*/
 users.db
 instance/
 **/__pycache__/
@@ -8,4 +8,5 @@ instance/
 .pytest_cache/
 htmlcov/
 .coverage
-
+.env
+.vault_pass.txt
