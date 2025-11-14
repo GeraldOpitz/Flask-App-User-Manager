@@ -1,0 +1,15 @@
+[Unit]
+Description=Gunicorn for {{ project_name }}
+After=network.target
+
+[Service]
+User={{ app_user }}
+Group={{ app_user }}
+WorkingDirectory={{ app_dir }}
+Environment=DATABASE_URL=postgresql+psycopg2://{{ db_user }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }}
+Environment=FLASK_APP=app.py
+ExecStart={{ app_venv }}/bin/gunicorn -w 3 -b 0.0.0.0:{{ app_port }} app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
