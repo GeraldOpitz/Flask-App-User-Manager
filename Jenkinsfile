@@ -29,7 +29,7 @@ pipeline {
             sh '''
               echo "Starting Terraform"
               terraform version
-              terraform init -reconfigure -backend-config="backend.hcl"
+              terraform init -backend-config="backend.hcl"
             '''
           }
         }
