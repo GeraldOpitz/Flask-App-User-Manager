@@ -38,7 +38,7 @@ def test_tables_are_created():
         inspector = inspect(db.engine)
         tables = inspector.get_table_names()
         # By default, SQLAlchemy uses the model name in lowercase: 'user'
-        assert "user" in tables
+        assert "users" in tables
 
 # Test case for user insertion and querying
 def test_insert_and_query_user():
