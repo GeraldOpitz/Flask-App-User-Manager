@@ -16,7 +16,10 @@ pipeline {
 
     stage('Checkout Terraform Project') {
       steps {
-        checkout scm
+        dir("${TF_DIR}") {
+          git branch: 'develop', 
+              url: 'https://github.com/GeraldOpitz/FUM-TF',
+        }
       }
     }
 
